@@ -1,0 +1,388 @@
+<?xml version="1"?>
+<robot name="" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="robot_namespace" default=""/>
+  <xacro:property name="robot_namespace" value="$(arg robot_namespace)"/>
+ 
+
+  <xacro:include filename="$(find grad)/urdf/robot_gazebo.xacro" />
+
+  <xacro:property name="package_name" value="grad"/>
+  <xacro:property name="robot_name" value="my_robot"/>
+  <xacro:include filename="$(find ${package_name})/urdf/include/diffbot_caster_macro.urdf.xacro" />
+  <xacro:include filename="$(find ${package_name})/urdf/include/common_macros.urdf.xacro" />
+
+  <xacro:property name="caster_wheel_yaml_rear_right" value="$(find ${package_name})/config/${robot_name}/caster_wheel_rear_right.yaml" />
+  <xacro:property name="caster_wheel_props_rear_right" value="${xacro.load_yaml(caster_wheel_yaml_rear_right)}"/>
+
+  <xacro:property name="caster_wheel_yaml_rear_left" value="$(find ${package_name})/config/${robot_name}/caster_wheel_rear_left.yaml" />
+  <xacro:property name="caster_wheel_props_rear_left" value="${xacro.load_yaml(caster_wheel_yaml_rear_left)}"/>
+
+  <xacro:property name="caster_wheel_yaml_front_left" value="$(find ${package_name})/config/${robot_name}/caster_wheel_front_left.yaml" />
+  <xacro:property name="caster_wheel_props_front_left" value="${xacro.load_yaml(caster_wheel_yaml_front_left)}"/>
+
+  <xacro:property name="caster_wheel_yaml_front_right" value="$(find ${package_name})/config/${robot_name}/caster_wheel_front_right.yaml" />
+  <xacro:property name="caster_wheel_props_front_right" value="${xacro.load_yaml(caster_wheel_yaml_front_right)}"/>
+
+    
+
+<xacro:caster_wheel prefix="caster1" reflect="1" wheel_props="${caster_wheel_props_front_left}"   />
+<xacro:caster_wheel prefix="caster2" reflect="1" wheel_props="${caster_wheel_props_front_right}"    />
+<xacro:caster_wheel prefix="caster3" reflect="1" wheel_props="${caster_wheel_props_rear_right}"   />
+<xacro:caster_wheel prefix="caster4" reflect="1" wheel_props="${caster_wheel_props_rear_left}"   />
+<!--=========================== robot parts ===========================-->
+
+
+<link name="base_footprint"/>
+  <!-- chassis -->
+  <link name="chassis_link">
+    <inertial>
+      <origin xyz="0 0 0.069" rpy="0 0 0" />
+      <mass value="20" />
+      <inertia ixx="3.26580156503649" ixy="4.84330792262049E-16" ixz="-4.35211201648978E-17"
+        iyy="5.08046047143446" iyz="1.87860825824131E-17" izz="6.97273174479868" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.069" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/chassis_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.069" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/chassis_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="chassis_link" />
+    <origin xyz="0 0 0.069" rpy="0 0 0"/>
+  </joint>
+  
+  
+  <!-- rightwheel -->
+  <link name="rightwheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.986293150634229" />
+      <inertia ixx="0.00192205167923649" ixy="-3.92460782132581E-22" ixz="-1.56112961966522E-36"
+        iyy="0.00351185336380254" iyz="3.49141665609625E-36" izz="0.00192205167923649" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/rightwheel.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/rightwheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="rightwheeljoint" type="continuous">
+    <origin xyz="0 -0.28 0.084" rpy="0 0 0" />
+    <parent link="chassis_link" />
+    <child link="rightwheel" />
+    <axis xyz="0 1 0" />
+
+    <dynamics damping="1.0" friction="100.0" />
+  </joint>
+  <!-- leftwheel -->
+  <link name="leftwheel">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.986293150634228" />
+      <inertia ixx="0.00192205167923649" ixy="-3.92460782132561E-22" ixz="-1.5611296196652E-36"
+        iyy="0.00351185336380254" iyz="3.49141665609624E-36" izz="0.00192205167923649" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/leftwheel.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/leftwheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="leftwheeljoint" type="continuous">
+    <origin xyz="0 0.28 0.084" rpy="0 0 0" />
+    <parent link="chassis_link" />
+    <child link="leftwheel" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="1.0" friction="100.0" />
+  </joint>
+  <!-- linearactuator -->
+  <link name="linearactuator">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.678720341999254" />
+      <inertia ixx="0.00597536521593727" ixy="7.66386326988773E-35" ixz="-2.40105103294422E-18"
+        iyy="0.00597536521593727" iyz="1.81499266487448E-18" izz="0.0105736741029977" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/linearactuator.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/linearactuator.STL" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <!-- linear actuator joint -->
+  <joint name="linearactuatorjoint" type="prismatic">
+    <origin xyz="0 0 0.383" rpy="0 0 0" />
+    <parent link="chassis_link" />
+    <child link="linearactuator" />
+    <axis xyz="0 0 1" />
+    <limit lower="0" upper="0.7" effort="100" velocity="0.1" />
+    <dynamics damping="1.0" friction="0.5" />
+  </joint>
+  
+
+<!--=========================== SENSORS ===========================-->
+
+  <!-- Lidar -->
+
+  <link name="rplidar">
+    <inertial>
+      <mass value="0.1" />
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+    </inertial>
+    <collision name="rplidar_collision">
+      <origin xyz="0 0 0" rpy="0.0 0.0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/laser_link.STL" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <visual name="rplidar_visual">
+      <origin xyz="0 0 0" rpy="0.0 0.0 0" />
+      <geometry>
+        <mesh filename="package://grad/meshes/laser_link.STL" scale="1 1 1" />
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="joint_rplidar" type="fixed">
+    <axis xyz="0 1 0" />
+    <parent link="chassis_link" />
+    <child link="rplidar" />
+    <origin xyz="0.2 0 0.39" rpy="3.1416 3.1416 0" />
+  </joint>
+  
+
+
+
+  <!-- imu -->
+ <link name="imu_link">
+    <inertial>
+      <mass value="0.01" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+  </inertial>
+</link>
+
+<joint name="imu_joint" type="fixed">
+  <parent link="chassis_link"/>
+  <child link="imu_link"/>
+  <origin xyz="0 0 0" rpy="0 0 0" />
+</joint>
+
+
+
+  <link name="camera_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.05 0.05" />
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.05 0.05 0.05" />
+      </geometry>
+      <material name="red" />
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+
+ <joint name="camera_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 0 0.15" rpy="0 1.5708 0" />
+    <parent link="chassis_link" />
+    <child link="camera_link" />
+  </joint>
+
+
+<!--=========================== PLUGINS ===========================-->
+
+
+
+    <gazebo reference="camera_link">
+    <sensor type="camera" name="camera1">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>$(arg robot_namespace)/camera1</cameraName>
+        <imageTopicName>$(arg robot_namespace)/image_raw</imageTopicName>
+        <cameraInfoTopicName>$(arg robot_namespace)/camera_info</cameraInfoTopicName>
+        <frameName>$(arg robot_namespace)/camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+  <!-- Lidar plugin-->
+ <gazebo reference="rplidar">
+    <sensor type="ray" name="laser_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1.0</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.36</min>
+          <max>8.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise parameters based on published spec for Hokuyo laser
+                   achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+                   stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+                   reading. -->
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+        <topicName>$(arg robot_namespace)/scan</topicName>
+        <frameName>$(arg robot_namespace)/rplidar</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+
+  <!-- imu plugin -->
+ <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>true</visualize>
+     
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>$(arg robot_namespace)/imu</topicName>
+        <bodyName>$(arg robot_namespace)/imu_link</bodyName>
+        <updateRateHZ>50.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
+
+
+<!--=========================== Wheels friction ===========================-->
+        
+
+  <gazebo reference="$(arg robot_namespace)leftwheel">
+        <selfCollide>false</selfCollide>
+            <mu1>1</mu1>
+            <mu2>1</mu2>
+            <kp>1e5</kp>
+            <kd>1e2</kd>
+            <minDepth>0.001</minDepth>
+            <maxVel>1</maxVel>
+            <fdir1 value="0 0 0" />
+    </gazebo>
+
+    <gazebo reference="$(arg robot_namespace)rightwheel">
+       <selfCollide>false</selfCollide>
+            <mu1>1</mu1>
+            <mu2>1</mu2>
+            <kp>1e5</kp>
+            <kd>1e2</kd>
+            <minDepth>0.001</minDepth>
+            <maxVel>1</maxVel>
+            <fdir1 value="0 0 0" />
+    </gazebo>
+
+
+
+</robot>
