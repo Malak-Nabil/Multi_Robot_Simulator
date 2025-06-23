@@ -1,0 +1,15 @@
+material qr_shelf_D/qr_shelf_D
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture qr_shelf_D.png
+                filtering none
+                scale 1.0 1.0
+            }
+        }
+    }
+}

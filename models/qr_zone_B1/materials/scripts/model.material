@@ -1,0 +1,15 @@
+material qr_zone_B1/qr_zone_B1
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture qr_zone_B1.png
+                filtering none
+                scale 1.0 1.0
+            }
+        }
+    }
+}
