@@ -1,0 +1,65 @@
+rear:
+  base:
+    mass: 0.02
+    size:
+      x: 0.04
+      y: 0.04
+      z: 0.04
+    dx: -0.076
+    dy: 0.176
+    dz:  0.02
+    mesh: 'caster_base.stl'
+
+  hub:
+    mass: 0.02
+    size:
+      x: 0.04
+      y: 0.04
+      z: 0.04
+    dx: -0.077
+    dy: 0.176
+    dz: 0.02
+    mesh: 'caster_wheel_support.stl'
+
+  wheel:
+    mass: 0.5
+    radius: 0.015
+    length: 0.01
+    mesh: 'caster_wheel.stl'
+    x_offset: 0.035
+    dx: -0.016
+    dy: 0.0
+    dz: -0.04
+
+front:
+  base:
+    mass: 0.02
+    size:
+      x: 0.04
+      y: 0.04
+      z: 0.04
+    dx: 0.076
+    dy: 0.176
+    dz:  0.02
+    mesh: 'caster_base.stl'
+
+  hub:
+    mass: 0.02
+    size:
+      x: 0.04
+      y: 0.04
+      z: 0.04
+    dx: 0.077
+    dy: 0.176
+    dz: 0.02
+    mesh: 'caster_wheel_support.stl'
+
+  wheel:
+    mass: 0.5
+    radius: 0.015
+    length: 0.01
+    mesh: 'caster_wheel.stl'
+    x_offset: 0.035
+    dx: -0.016
+    dy: 0.0
+    dz: -0.04
