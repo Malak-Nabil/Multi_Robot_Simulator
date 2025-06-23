@@ -1,0 +1,67 @@
+<launch>
+
+  <!-- Use simulation time -->
+  <param name="use_sim_time" value="true"/>
+
+  <!-- Arguments -->
+  <arg name="namespace" default=""/>
+  <arg name="initial_pose_x" default="0"/>
+  <arg name="initial_pose_y" default="0"/>
+  <arg name="initial_pose_z" default="0"/>
+  <arg name="initial_pose_a" default="0"/>
+  <arg name="open_rviz" default="false"/>
+
+
+  <!-- Namespaced group for robot -->
+  <group ns="$(arg namespace)">
+    <!-- Load URDF into PARAMETER SERVER -->
+  <param name="robot_description" 
+       command="$(find xacro)/xacro $(find grad)/urdf/robot.urdf.xacro robot_namespace:=$(arg namespace)"/>
+
+    <!-- Spawn robot in Gazebo -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -model $(arg namespace) 
+              -param /$(arg namespace)/robot_description
+              -x $(arg initial_pose_x) -y $(arg initial_pose_y) -z $(arg initial_pose_z) "/>
+
+
+    <!-- Robot State Publisher -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+      <param name="tf_prefix" value="$(arg namespace)"/>
+    </node>
+
+    <!-- Joint State Publisher --> 
+   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <param name="tf_prefix" value="$(arg namespace)"/>
+      <param name="publish_tf" value="false" />
+      <remap from="/joint_states" to="/$(arg namespace)/joint_states"/>
+
+    </node> 
+
+
+    <!-- AMCL -->
+    <include file="$(find grad)/launch/AMCL.launch">
+      <arg name="tf_prefix" value="$(arg namespace)"/>
+      <arg name="scan_topic" value="scan"/>
+      <arg name="use_map_topic" value="true"/>
+      <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+      <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+      <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+      <arg name="global_frame_id" value="map"/>
+    </include>
+
+
+     <!-- Move Base -->
+    <include file="$(find grad)/launch/move_base.launch">
+      <arg name="robot_name" value="$(arg namespace)"/>
+    </include>
+
+  </group>
+
+
+
+
+
+  
+
+</launch>

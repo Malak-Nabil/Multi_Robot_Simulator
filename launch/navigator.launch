@@ -1,0 +1,56 @@
+<launch>    
+
+    <arg name="robot1_name" default="robot1"/>
+    <arg name="robot2_name" default="robot2"/>
+
+    <!-- Load controllers config for both robots -->
+    <rosparam file="$(find grad)/config/config.yaml" command="load" ns="$(arg robot1_name)"/>
+    <rosparam file="$(find grad)/config/config.yaml" command="load" ns="$(arg robot2_name)"/>
+
+    <!-- Controller Spawners for both robots -->
+    <node name="$(arg robot1_name)_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" ns="$(arg robot1_name)" args="joint_state_controller joint1_position_controller"/>
+
+    <node name="$(arg robot2_name)_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        output="screen" ns="$(arg robot2_name)" args="joint_state_controller joint1_position_controller"/>
+
+    <!-- Load diff_drive_controller config for both robots -->
+    <rosparam command="load" file="$(find grad)/config/diff_drive.yaml" ns="$(arg robot1_name)"/>
+    <rosparam command="load" file="$(find grad)/config/diff_drive.yaml" ns="$(arg robot2_name)"/>
+
+    <!-- Common parameters -->
+    <arg name="json_file" default="$(find grad)/qr_locations_gazebo.json"/>
+    
+    <!-- Choose which robots to launch (default both) -->
+    <arg name="launch_robot1" default="true"/>
+    <arg name="launch_robot2" default="true"/>
+    
+    <!-- Robot 1 Controller -->
+    <group if="$(arg launch_robot1)">
+        <node name="robot1_controller" pkg="grad" type="robot_navigator.py" output="screen">
+            <param name="~robot_id" value="robot1"/>
+            <param name="~json_file" value="$(arg json_file)"/>
+        </node>
+    </group>
+    
+    <!-- Robot 2 Controller -->
+    <group if="$(arg launch_robot2)">
+        <node name="robot2_controller" pkg="grad" type="robot_navigator.py" output="screen">
+            <param name="~robot_id" value="robot2"/>
+            <param name="~json_file" value="$(arg json_file)"/>
+        </node>
+    </group>
+
+    <node pkg="grad" type="linear_actuator.py" name="linear_actuator1" output="screen">
+        <param name="robot_name" value="robot1"/>
+    </node>
+
+    <node pkg="grad" type="linear_actuator.py" name="linear_actuator2" output="screen">
+        <param name="robot_name" value="robot2"/>
+    </node>
+
+
+
+
+
+</launch>

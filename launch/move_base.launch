@@ -1,0 +1,48 @@
+<launch>
+
+    
+    <arg name="robot_name" default="" />
+    <arg name="local_planner" default="dwa" doc="Local planner can be either dwa, dwb, base, teb or pose"/>
+    <arg name="move_forward_only" default="false"/>
+    <arg name="model" default="$(arg robot_name)" doc="model type [diffbot, remo]"/>
+    <arg name="open_rviz" default="false"/>    
+    <arg name="map_topic" default="$(arg robot_name)/map"/>
+    <arg name="robot_odom_frame" default="$(arg robot_name)/odom"/>
+    <arg name="robot_base_frame" default="$(arg robot_name)/base_footprint" />
+    <arg name="lidar_frame" default="$(arg robot_name)/rplidar" />
+    <arg name="scan_topic" default="$(arg robot_name)/scan" />
+
+   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+
+          <!-- Topic remappings -->
+          <!-- <remap from="map" to="/map"/> -->
+          <!-- <remap from="cmd_vel" to="/$(arg robot_name)/cmd_vel" />
+          <remap from="odom" to="/$(arg robot_name)/odom" />
+          <remap from="scan" to="/robot1/robot1/scan" />
+          <remap from="rplidar" to="/$(arg robot_name)/rplidar" />  -->
+          <!-- base_local_planner parameter is set in the loaded parameter file depending on the local_planner argument -->
+          <!--param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /-->
+          <rosparam file="$(find grad)/navigation/$(arg local_planner)_local_planner_params.yaml" command="load" />
+          <rosparam file="$(find grad)/navigation/move_base_params.yaml" command="load" />
+
+          <!-- global costmap params -->
+          <rosparam file="$(find grad)/navigation/costmap_common_params.yaml" command="load" ns="global_costmap" />
+          <rosparam file="$(find grad)/navigation/costmap_global_params.yaml" command="load" />
+          <param name="global_costmap/robot_base_frame" value="$(arg robot_base_frame)" />
+          <param name="global_costmap/obstacle_layer/scan/topic" value="$(arg scan_topic)" />
+          <param name="global_costmap/obstacle_layer/scan/sensor_frame" value="$(arg lidar_frame)" />
+          <param name="global_costmap/static_layer/map" value="$(arg map_topic)" />
+          <!-- local costmap params -->
+          <rosparam file="$(find grad)/navigation/costmap_common_params.yaml" command="load" ns="local_costmap" />
+          <rosparam file="$(find grad)/navigation/costmap_local_params.yaml" command="load" />
+          <param name="local_costmap/global_frame" value="$(arg robot_odom_frame)" />
+          <param name="local_costmap/robot_base_frame" value="$(arg robot_base_frame)" />
+          <param name="local_costmap/scan/sensor_frame" value="$(arg lidar_frame)" />
+          <param name="local_costmap/scan/topic" value="$(arg scan_topic)" />
+          <!-- remappings -->
+          <remap from="cmd_vel" to="/$(arg robot_name)/cmd_vel" />
+          <remap from="odom" to="/$(arg robot_name)/odom" /> 
+         
+          <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+    </node>
+</launch>

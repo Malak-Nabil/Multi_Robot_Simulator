@@ -1,0 +1,40 @@
+<launch>
+  <!-- Common parameters -->
+  <arg name="robot1_name" default="robot2"/>
+
+  <!-- Load controllers config for both robots -->
+  <rosparam file="$(find grad)/config/config.yaml" command="load" ns="$(arg robot1_name)"/>
+
+  <!-- Controller Spawners for both robots -->
+  <node name="$(arg robot1_name)_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="$(arg robot1_name)" args="joint_state_controller joint1_position_controller"/>
+
+
+  <!-- Load diff_drive_controller config for both robots -->
+  <rosparam command="load" file="$(find grad)/config/diff_drive.yaml" ns="$(arg robot1_name)"/>
+
+  <!-- Teleop control nodes for each robot -->
+  <node pkg="grad" type="laser_teleop_keyboard_robot1" name="$(arg robot1_name)_teleop" output="screen">
+    <param name="scale_linear" value="0.5" type="double"/>
+    <param name="scale_angular" value="1.5" type="double"/>
+    <param name="robot_namespace" value="$(arg robot1_name)"/>
+    <remap from="teleop_keyboard/cmd_vel" to="$(arg robot1_name)/cmd_vel"/>
+  </node>
+
+</launch>
+
+<!-- <launch>  
+  <rosparam file="$(find grad)/config/config.yaml" command="load"/>
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/my_robot" args="joint_state_controller 
+                                         joint1_position_controller"/>
+
+  <rosparam command="load" file="$(find grad)/config/diff_drive.yaml"/>
+
+  <node pkg="grad" type="laser_teleop_keyboard" name="teleop_keyboard" output="screen">
+    <param name="scale_linear" value="0.5" type="double"/>
+    <param name="scale_angular" value="1.5" type="double"/>
+    <remap from="teleop_keyboard/cmd_vel" to="/cmd_vel"/>
+  </node>
+</launch> -->

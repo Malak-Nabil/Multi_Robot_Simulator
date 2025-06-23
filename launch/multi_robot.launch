@@ -1,0 +1,44 @@
+<launch>
+
+  <param name="/use_sim_time" value="true"/>
+  <arg name="world_name" default="$(find grad)/worlds/real_warehouse_with_shelves.world"/>
+  <arg name="robot1_name" default="robot1"/>
+  <arg name="robot2_name" default="robot2"/>
+  <arg name="map_file" default="$(find grad)/maps/real2.yaml"/>
+
+  <!-- Launch Gazebo first -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="paused" value="false"/>
+    <arg name="gui" value="true"/>
+  </include>
+
+
+  <!-- Robot 1 -->
+  <include file="$(find grad)/launch/single_robot.launch">
+    <arg name="namespace" value="$(arg robot1_name)"/>
+    <arg name="initial_pose_x" value="0.5"/>
+    <arg name="initial_pose_y" value="0.0"/>
+    <arg name="initial_pose_z" value="0.04"/>
+    <arg name="initial_pose_a" value="0.0"/>
+  </include>
+
+
+  <!-- Map server -->
+  <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)">
+    <param name="frame_id" value="map" />
+  </node>
+
+  <!-- Robot 2 -->
+  <include file="$(find grad)/launch/single_robot.launch">
+    <arg name="namespace" value="$(arg robot2_name)"/>
+    <arg name="initial_pose_x" value="0.5"/>
+    <arg name="initial_pose_y" value="-1.0"/> 
+    <arg name="initial_pose_z" value="0.04"/>
+    <arg name="initial_pose_a" value="0.0"/>
+  </include>
+
+
+  <include file="$(find grad)/launch/task_manager.launch"/>
+
+</launch>

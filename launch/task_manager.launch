@@ -1,0 +1,24 @@
+<launch>
+<!-- Task assigner and state nodes -->
+
+  <node pkg="grad" type="amcl_correction_MultiRobot.py" name="qr_amcl_updater1" output="screen">
+        <param name="robot_namespace" value="robot1"/>
+  </node> 
+
+    <node pkg="grad" type="amcl_correction_MultiRobot.py" name="qr_amcl_updater2" output="screen">
+        <param name="robot_namespace" value="robot2"/>
+    </node> 
+
+  <node pkg="grad" type="robot_state.py" name="robot1_state" output="screen">
+    <param name="robot_id" value="robot1"/>
+  </node>
+
+  <node pkg="grad" type="robot_state.py" name="robot2_state" output="screen">
+    <param name="robot_id" value="robot2"/>
+  </node>
+
+  <node pkg="grad" type="gui.py" name="task_gui" output="screen"/>
+
+  <node pkg="grad" type="Task_management.py" name="task_assigner" output="screen"/>
+
+</launch>
